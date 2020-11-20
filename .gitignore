@@ -106,3 +106,5 @@ dist
 # Configuration files
 config.js
 conf.js
+# sql files
+# *.sql
