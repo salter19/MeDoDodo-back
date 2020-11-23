@@ -44,28 +44,28 @@ const connectionFunctions = {
     }
     return new Promise(someFunc);
   },
-  /*
-  save: (location) => {
+
+  save: (task) => {
     function someFunc(resolve, reject) {
       if (connection) {
-        // sql query for inserting values to locations
-        connection.query(
-          "INSERT INTO locations (latitude, longitude) VALUES (?,?)",
-          location,
-          (err, results) => {
-            if (err) {
-              reject(err);
-            }
+        const sql_1 = "INSERT INTO tasks (title, due_date) VALUES (?, ?)";
+        const sql_2 =
+          "INSERT INTO tasks (title, due_date, description) VALUES (?, ?, ?)";
 
-            resolve("Successfully inserted values. Id is " + results.insertId);
-          }
-        );
+        const saveUp = async (err, result) => {
+          err
+            ? reject(err)
+            : resolve(`Successfully inserted values. Id is ${result.insertId}`);
+        };
+
+        connection.query(sql, task, saveUp);
       } else {
         reject("You have no connection. Can't save new location.");
       }
     }
     return new Promise(someFunc);
   },
+  /*
   deleteById: (id) => {
     function someFunc(resolve, reject) {
       if (connection) {
