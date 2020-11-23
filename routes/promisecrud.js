@@ -1,10 +1,38 @@
 const mysql = require("mysql");
 const config = require("./config.js");
 const Task = require("./new_task");
+const Schemas = require("./../database/schema");
+const Validator = require("jsonschema").Validator;
+const schemaValidation = new Validator();
 
 config.connectionLimit = 10;
 
 let connection = null;
+
+const validateTaskObj = (taskObj) => {
+  const res = schemaValidation.validate(taskObj, Schemas.schemaTaskObj);
+  return res.errors.length < 1 ? true : false;
+};
+
+const getKeys = (taskObj) => {
+  let result = `${Object.keys(taskObj)[0]}, ${Object.keys(taskObj)[1]}`;
+
+  if (Object.keys(taskObj).length > 2) {
+    for (let i = 2; i < Object.keys(taskObj).length; i++) {
+      result += `, ${Object.keys(taskObj)[i]}`;
+    }
+  }
+  return result;
+};
+
+const getValues = (taskObj) => {
+  const mark = "?";
+  let result = ``;
+  Object.keys(taskObj).map((key) => (result += `${mark}, `));
+  result = result.substring(0, result.length - 2);
+
+  return result;
+};
 
 const connectionFunctions = {
   connect: () => {
@@ -47,23 +75,36 @@ const connectionFunctions = {
   },
 
   save: (taskObj) => {
-    console.log("Hello there");
-
     const someFunc = async (resolve, reject) => {
       const createNewTask = () => {
-        // new task obj
-        const task = new Task(
-          taskObj.title,
-          taskObj.due_date,
-          taskObj.description,
-          taskObj.priority,
-          taskObj.category_id
-        );
+        // validate given task object
+        validateTaskObj(taskObj)
+          ? (() => {
+              // create new Task object
+              const task = new Task(taskObj);
 
-        // console.log(task.getTaskValues());
+              const sql = `INSERT INTO tasks(${getKeys(
+                task
+              )}) VALUES(${getValues(task)})`;
 
-        resolve(Object.keys(taskObj));
+              for (let i of task.getTaskValues()) {
+                console.log(typeof i);
+              }
+
+              connection.query(
+                sql,
+                task.getTaskValues(),
+                (err, res, fields) => {
+                  err
+                    ? reject(`${400} - Invalid input, task not saved.`)
+                    : resolve(`${201} - Created. ID: ${res.insertId}`);
+                }
+              );
+            })()
+          : reject(`${400} - Incorrect input, cannot save task`);
       };
+
+      // check that connection is up
       connection
         ? createNewTask()
         : reject(`${500} - No connection, cannot save task.`);

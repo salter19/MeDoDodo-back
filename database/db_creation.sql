@@ -23,6 +23,8 @@ CREATE TABLE categories (
 -- INSERT INTO categories() VALUES();
 -- INSERT INTO tasks (title, due_date) VALUES ('Teemu ja team Dodo', '2020-11-20 10:00:00');
 
+INSERT INTO tasks (title, due_date, description, priority, category_id) VALUES ('dodo backend 2', '2020-11-23 21:00:00', '', 3, 1);
+
 SELECT 
   tasks.title           AS    Task
   , categories.title    AS    Category
@@ -32,3 +34,6 @@ FROM
   tasks
 INNER JOIN categories
   ON tasks.category_id = categories.id;
+
+-- curl -X POST -d "{\"title\": \"add task\", \"due_date\":\"2020-11-23 21:00:00\", \"category_id\":2}" -H "Content-Type:application/json" http://localhost:8080/tasks
+INSERT INTO tasks (title, due_date, description, priority, category_id) VALUES ('dodo backend 2', '2020-11-23 21:00:00', '', 3, 2);
