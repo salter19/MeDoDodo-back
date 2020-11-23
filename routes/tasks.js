@@ -1,8 +1,10 @@
 const express = require("express");
+const NewTask = require("./new_task.js");
 const database = require("./promisecrud.js");
 
 // create router
 const router = express.Router();
+router.use(express.json());
 
 // get all entries from database
 router.get("/", async (req, res) => {
@@ -14,6 +16,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+// save a task into database
+router.post("/", async (req, res) => {
+  try {
+    const result = await database.save(req.body);
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.end();
+  }
+});
 /*
 // get database entry with regex where id is a number
 // add possibility for number to be negative value

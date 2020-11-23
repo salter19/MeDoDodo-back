@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const config = require("./config.js");
+const newTask = require("./new_task");
 
 config.connectionLimit = 10;
 
@@ -45,27 +46,42 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
-  save: (task) => {
+  save: (taskObj) => {
+    console.log("Hello there");
+
+    const someFunc = async (resolve, reject) => {
+      const createNewTask = () => {
+        resolve(Object.keys(taskObj));
+      };
+      connection
+        ? createNewTask()
+        : reject(`${500} - No connection, cannot save task.`);
+    };
+
+    return new Promise(someFunc);
+  },
+  /*
+  save: (location) => {
     function someFunc(resolve, reject) {
       if (connection) {
-        const sql_1 = "INSERT INTO tasks (title, due_date) VALUES (?, ?)";
-        const sql_2 =
-          "INSERT INTO tasks (title, due_date, description) VALUES (?, ?, ?)";
+        // sql query for inserting values to locations
+        connection.query(
+          "INSERT INTO locations (latitude, longitude) VALUES (?,?)",
+          location,
+          (err, results) => {
+            if (err) {
+              reject(err);
+            }
 
-        const saveUp = async (err, result) => {
-          err
-            ? reject(err)
-            : resolve(`Successfully inserted values. Id is ${result.insertId}`);
-        };
-
-        connection.query(sql, task, saveUp);
+            resolve("Successfully inserted values. Id is " + results.insertId);
+          }
+        );
       } else {
         reject("You have no connection. Can't save new location.");
       }
     }
     return new Promise(someFunc);
   },
-  /*
   deleteById: (id) => {
     function someFunc(resolve, reject) {
       if (connection) {
