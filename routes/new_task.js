@@ -1,3 +1,11 @@
+const Schemas = require("./../database/schema");
+const JsonSchema = require("jsonschema").Validator;
+const schemaValidation = new JsonSchema();
+
+const validateTaskObj = (taskObj) => {
+  const res = v;
+};
+
 const NewTask = class {
   constructor(
     title,

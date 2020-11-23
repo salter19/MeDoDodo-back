@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const config = require("./config.js");
-const newTask = require("./new_task");
+const Task = require("./new_task");
 
 config.connectionLimit = 10;
 
@@ -51,6 +51,17 @@ const connectionFunctions = {
 
     const someFunc = async (resolve, reject) => {
       const createNewTask = () => {
+        // new task obj
+        const task = new Task(
+          taskObj.title,
+          taskObj.due_date,
+          taskObj.description,
+          taskObj.priority,
+          taskObj.category_id
+        );
+
+        // console.log(task.getTaskValues());
+
         resolve(Object.keys(taskObj));
       };
       connection
