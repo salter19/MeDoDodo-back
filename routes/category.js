@@ -1,4 +1,4 @@
-const Schemas = require("./../database/schema");
+const Schemas = require("../database/schema");
 const Validator = require("jsonschema").Validator;
 const schemaValidation = new Validator();
 

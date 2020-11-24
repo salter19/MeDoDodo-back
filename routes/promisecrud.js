@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const config = require("./config.js");
-const Task = require("./task");
+const Task = require("./Task");
 const Schemas = require("./../database/schema");
 const Validator = require("jsonschema").Validator;
 const schemaValidation = new Validator();
@@ -8,43 +8,46 @@ const schemaValidation = new Validator();
 config.connectionLimit = 10;
 
 let connection = null;
-
-const validateTaskObj = (taskObj) => {
+// ----
+// Set of helper functions
+const validateTaskInput = (taskObj) => {
   const res = schemaValidation.validate(taskObj, Schemas.schemaTaskObj);
   return res.errors.length < 1 ? true : false;
 };
-
-const getKeys = (taskObj) => {
-  let result = `${Object.keys(taskObj)[0]}, ${Object.keys(taskObj)[1]}`;
-
-  if (Object.keys(taskObj).length > 2) {
-    for (let i = 2; i < Object.keys(taskObj).length; i++) {
-      result += `, ${Object.keys(taskObj)[i]}`;
-    }
+const getKeys = (task) => {
+  let result = [];
+  for (let key in task) {
+    result.push(key);
   }
   return result;
 };
-
-const getValues = (taskObj) => {
+const getQuestionMarks = (task) => {
   const mark = "?";
   let result = ``;
-  Object.keys(taskObj).map((key) => (result += `${mark}, `));
-  result = result.substring(0, result.length - 2);
+  Object.keys(task).map((key) => (result += `${mark}, `));
 
+  // remove comma and space from the end
+  result = result.substring(0, result.length - 5);
   return result;
 };
-
+const getValues = (task) => {
+  let result = [];
+  for (let value of Object.values(task)) {
+    result.push(value);
+  }
+  return result;
+};
 const isCategoryTitle = async (title) => {
   const allCategories = await connectionFunctions.getCategories();
   let isValid = false;
 
   for (let data of allCategories) {
-    console.log(data.title);
-    data.title === title ? (isValid = true) : (isValid = false);
+    if (data.title === title) {
+      isValid = true;
+    }
   }
   return isValid;
 };
-
 const getCatID = async (title) => {
   const allCategories = await connectionFunctions.getCategories();
   let catID;
@@ -58,12 +61,12 @@ const getCatID = async (title) => {
 const saveNewCategory = async (title) => {
   try {
     const newCatID = await connectionFunctions.saveCategory(title);
-    console.log("new ID: " + newCatID);
     return newCatID;
   } catch (e) {
     console.log(`${400} - Invalid insert, could not create new category`);
   }
 };
+// ----
 const connectionFunctions = {
   connect: () => {
     function someFunc(resolve, reject) {
@@ -104,35 +107,35 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
-  saveTask: (taskObj) => {
+  saveTask: (input) => {
     const someFunc = async (resolve, reject) => {
       const createNewTask = () => {
-        // validate given task object
-        validateTaskObj(taskObj)
+        validateTaskInput(input)
           ? (async () => {
-              // create new Task object
-              const task = new Task(taskObj);
-
+              const task = new Task(input);
               const isCategory = await isCategoryTitle(task.category_title);
               let catID;
 
+              // set catID based on whether it exists or new is created
               isCategory
                 ? (catID = await getCatID(task.category_title))
                 : (catID = await saveNewCategory(task.category_title));
 
-              const sql = `INSERT INTO tasks(${getKeys(
-                task
-              )}) VALUES(${getValues(task)})`;
+              // set catID into Task object as well
+              task.setCategoryID(Number(catID));
 
-              connection.query(
-                sql,
-                task.getTaskValues(),
-                (err, res, fields) => {
-                  err
-                    ? reject(`${400} - Invalid input, task not saved.`)
-                    : resolve(`${201} - Created. ID: ${res.insertId}`);
-                }
-              );
+              // variables needed in the query
+              const keys = getKeys(task.getTaskItems());
+              const questionMarks = getQuestionMarks(task);
+              const values = getValues(task.getTaskItems());
+
+              const sql = `INSERT INTO tasks(${keys}) VALUES(${questionMarks})`;
+
+              connection.query(sql, values, (err, res) => {
+                err
+                  ? reject(`${400} - Invalid input in query, task not saved.`)
+                  : resolve(`${201} - Created. ID: ${res.insertId}`);
+              });
             })()
           : reject(`${400} - Incorrect input, cannot save task`);
       };
@@ -164,9 +167,7 @@ const connectionFunctions = {
     };
     return new Promise(someFunc);
   },
-
   saveCategory: async (_title) => {
-    console.log("inside saveNewCategory");
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
@@ -183,27 +184,6 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
   /*
-  save: (location) => {
-    function someFunc(resolve, reject) {
-      if (connection) {
-        // sql query for inserting values to locations
-        connection.query(
-          "INSERT INTO locations (latitude, longitude) VALUES (?,?)",
-          location,
-          (err, results) => {
-            if (err) {
-              reject(err);
-            }
-
-            resolve("Successfully inserted values. Id is " + results.insertId);
-          }
-        );
-      } else {
-        reject("You have no connection. Can't save new location.");
-      }
-    }
-    return new Promise(someFunc);
-  },
   deleteById: (id) => {
     function someFunc(resolve, reject) {
       if (connection) {
