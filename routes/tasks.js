@@ -1,5 +1,5 @@
 const express = require("express");
-const NewTask = require("./new_task.js");
+const NewTask = require("./task.js");
 const database = require("./promisecrud.js");
 
 // create router

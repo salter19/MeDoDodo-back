@@ -1,4 +1,4 @@
-const NewTask = class {
+const Task = class {
   constructor(taskObj) {
     this.title = taskObj.title;
     this.due_date = taskObj.due_date;
@@ -20,4 +20,4 @@ const NewTask = class {
   }
 };
 
-module.exports = NewTask;
+module.exports = Task;
