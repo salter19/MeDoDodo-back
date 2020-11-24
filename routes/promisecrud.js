@@ -34,6 +34,36 @@ const getValues = (taskObj) => {
   return result;
 };
 
+const isCategoryTitle = async (title) => {
+  const allCategories = await connectionFunctions.getCategories();
+  let isValid = false;
+
+  for (let data of allCategories) {
+    console.log(data.title);
+    data.title === title ? (isValid = true) : (isValid = false);
+  }
+  return isValid;
+};
+
+const getCatID = async (title) => {
+  const allCategories = await connectionFunctions.getCategories();
+  let catID;
+  for (let data of allCategories) {
+    if (data.title === title) {
+      catID = data.id;
+    }
+  }
+  return catID;
+};
+const saveNewCategory = async (title) => {
+  try {
+    const newCatID = await connectionFunctions.saveCategory(title);
+    console.log("new ID: " + newCatID);
+    return newCatID;
+  } catch (e) {
+    console.log(`${400} - Invalid insert, could not create new category`);
+  }
+};
 const connectionFunctions = {
   connect: () => {
     function someFunc(resolve, reject) {
@@ -74,22 +104,25 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
-  save: (taskObj) => {
+  saveTask: (taskObj) => {
     const someFunc = async (resolve, reject) => {
       const createNewTask = () => {
         // validate given task object
         validateTaskObj(taskObj)
-          ? (() => {
+          ? (async () => {
               // create new Task object
               const task = new Task(taskObj);
+
+              const isCategory = await isCategoryTitle(task.category_title);
+              let catID;
+
+              isCategory
+                ? (catID = await getCatID(task.category_title))
+                : (catID = await saveNewCategory(task.category_title));
 
               const sql = `INSERT INTO tasks(${getKeys(
                 task
               )}) VALUES(${getValues(task)})`;
-
-              for (let i of task.getTaskValues()) {
-                console.log(typeof i);
-              }
 
               connection.query(
                 sql,
@@ -110,6 +143,43 @@ const connectionFunctions = {
         : reject(`${500} - No connection, cannot save task.`);
     };
 
+    return new Promise(someFunc);
+  },
+  getCategories: async () => {
+    const someFunc = (resolve, reject) => {
+      const getData = () => {
+        const sql = "SELECT * FROM categories";
+
+        connection.query(sql, (err, res, fields) => {
+          const cat = JSON.parse(JSON.stringify(res));
+          err
+            ? reject(`${400} - Invalid input, could not retrieve categories`)
+            : resolve(cat);
+        });
+      };
+
+      connection
+        ? getData()
+        : reject(`${500} - No connection. Cannot retrieve categories.`);
+    };
+    return new Promise(someFunc);
+  },
+
+  saveCategory: async (_title) => {
+    console.log("inside saveNewCategory");
+    const someFunc = async (resolve, reject) => {
+      const createNewCategory = () => {
+        const sql = `INSERT INTO categories(title) VALUES(?)`;
+        connection.query(sql, _title, (err, res) => {
+          err
+            ? reject(`${400} - Invalid input, could not create new category.`)
+            : resolve(`${res.insertId}`);
+        });
+      };
+      connection
+        ? createNewCategory()
+        : reject(`${500} - No connection, cannot save category.`);
+    };
     return new Promise(someFunc);
   },
   /*

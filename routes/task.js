@@ -4,7 +4,9 @@ const Task = class {
     this.due_date = taskObj.due_date;
     this.description = taskObj.description ? taskObj.description : "";
     this.priority = taskObj.priority ? taskObj.priority : 0;
-    this.category_id = taskObj.category_id ? taskObj.category_id : 1;
+    this.category_title = taskObj.category_title
+      ? taskObj.category_title
+      : "my_tasks";
     this.is_done = false;
   }
 
@@ -14,7 +16,7 @@ const Task = class {
       this.due_date,
       this.description,
       this.priority,
-      this.category_id,
+      this.category_title,
       this.is_done,
     ];
   }

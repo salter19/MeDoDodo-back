@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 // save a task into database
 router.post("/", async (req, res) => {
   try {
-    const result = await database.save(req.body);
+    const result = await database.saveTask(req.body);
     res.send(result);
   } catch (e) {
     console.log(e);
