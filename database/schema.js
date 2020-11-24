@@ -36,5 +36,20 @@ const schemaTaskObj = {
   required: ["title", "due_date"],
 };
 
-const schemas = { schemaTaskObj };
+const schemaCategory = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  title: "Category",
+  description: "Category object to be saved into database.",
+  type: "object",
+  properties: {
+    title: {
+      type: "string",
+      minLength: 1,
+      maxLength: 30,
+      description: "Category title",
+    },
+  },
+  required: ["title"],
+};
+const schemas = { schemaTaskObj, schemaCategory };
 module.exports = schemas;
