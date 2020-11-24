@@ -44,6 +44,27 @@ const connectionFunctions = {
     }
     return new Promise(someFunc);
   },
+  findTasksByWeek: (weekNumber) => {
+    function someFunc(resolve, reject) {
+      if (connection) {
+        if (weekNumber > 0 && weekNumber < 54) {
+          const sql = "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ?";
+          connection.query(sql, weekNumber, (err, tasks) => {
+            if (err) {
+              reject(err);
+            }
+            const entries = JSON.parse(JSON.stringify(tasks));
+            resolve(entries);
+          });
+        } else {
+          reject("The given week number is not valid.");
+        }
+      } else {
+        reject("Please connect first to get the entries.");
+      }
+    }
+    return new Promise(someFunc);
+  },
   /*
   save: (location) => {
     function someFunc(resolve, reject) {
