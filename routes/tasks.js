@@ -26,10 +26,9 @@ router.post("/", async (req, res) => {
     res.end();
   }
 });
-/*
+
 // get database entry with regex where id is a number
-// add possibility for number to be negative value
-router.get("/:idNumber(-?[0-9]+)", async (req, res) => {
+router.get("/:idNumber([0-9]+)", async (req, res) => {
   try {
     res.send(await database.findById(Number(req.params.idNumber)));
     res.statusCode = 200;
@@ -38,6 +37,8 @@ router.get("/:idNumber(-?[0-9]+)", async (req, res) => {
     res.send(err);
   }
 });
+
+/*
 
 // post new entry to database
 router.post("/", async (req, res) => {

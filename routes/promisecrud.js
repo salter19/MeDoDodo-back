@@ -156,7 +156,7 @@ const connectionFunctions = {
         connection.query(sql, (err, res, fields) => {
           const cat = JSON.parse(JSON.stringify(res));
           err
-            ? reject(`${400} - Invalid input, could not retrieve categories`)
+            ? reject(`${400} - Invalid input could not retrieve categories`)
             : resolve(cat);
         });
       };
@@ -180,6 +180,30 @@ const connectionFunctions = {
       connection
         ? createNewCategory()
         : reject(`${500} - No connection, cannot save category.`);
+    };
+    return new Promise(someFunc);
+  },
+
+  findById: (id) => {
+    console.log("hello it is me mario" + id);
+    const someFunc = (resolve, reject) => {
+      const findTask = async () => {
+        sql = `SELECT * FROM tasks WHERE id =?`;
+
+        try {
+          connection.query(sql, id, (err, res) => {
+            err
+              ? reject(`${400} - Invalid input, could not find task.`)
+              : resolve(JSON.parse(JSON.stringify(res)));
+          });
+        } catch (e) {
+          reject(`${400} - Invalid input, could not find task.`);
+        }
+      };
+
+      connection
+        ? findTask()
+        : reject(`${500} - No connection, cannot find task.`);
     };
     return new Promise(someFunc);
   },
