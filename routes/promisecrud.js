@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-const config = require("./config.js");
+const config = require("./configuration.js");
 const Task = require("./Task");
 const Schemas = require("./../database/schema");
 const Validator = require("jsonschema").Validator;
