@@ -1,5 +1,11 @@
 DROP TABLE IF EXISTS tasks, categories;
 
+CREATE TABLE categories (
+  id              INT           NOT NULL            AUTO_INCREMENT
+  , title         VARCHAR(30)   DEFAULT 'my_tasks'  UNIQUE
+  , PRIMARY KEY (id)
+);
+
 CREATE TABLE tasks (
   id              INT                 NOT NULL      AUTO_INCREMENT
   , title         VARCHAR(255)        NOT NULL
@@ -15,15 +21,13 @@ CREATE TABLE tasks (
                   ON DELETE           RESTRICT
 );
 
-CREATE TABLE categories (
-  id              INT           NOT NULL            AUTO_INCREMENT
-  , title         VARCHAR(30)   DEFAULT 'my_tasks'  UNIQUE
-  , PRIMARY KEY (id)
-);
 -- INSERT INTO categories() VALUES();
 -- INSERT INTO tasks (title, due_date) VALUES ('Teemu ja team Dodo', '2020-11-20 10:00:00');
-
-INSERT INTO tasks (title, due_date, description, priority, category_id) VALUES ('dodo backend 2', '2020-11-23 21:00:00', '', 3, 1);
+INSERT INTO categories() VALUES();
+INSERT INTO categories (title) VALUES ("database course"); 
+INSERT INTO tasks (title, due_date, description, priority, category_id) VALUES ('dodo backend', '2020-11-25 21:00:00', '', 3, 1),
+('dodo backend 2', '2020-12-20 21:00:00', 'some additional info', 3, 2),
+('dodo front', '2020-12-05 15:00:00', 'almost ready by this time', 2, 1);
 
 SELECT 
   tasks.title           AS    Task
