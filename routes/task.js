@@ -21,9 +21,11 @@ const Task = class {
       is_done: this.is_done,
     };
   }
+
   setCategoryID(_id) {
     this.category_id = _id;
   }
+
   getCategoryID() {
     return this.category_id;
   }
