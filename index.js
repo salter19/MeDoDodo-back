@@ -5,6 +5,9 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
+// connecting front to backend
+app.use(express.static("frontend/build"));
+
 const port = process.env.PORT || 8080;
 
 // connect router to app
