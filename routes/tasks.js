@@ -1,5 +1,5 @@
 const express = require("express");
-const NewTask = require("./Task.js");
+// const NewTask = require("./Task.js");
 const database = require("./promisecrud.js");
 
 // create router
@@ -27,11 +27,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-// get database entry with regex where id is a number
-router.get("/:idNumber([0-9]+)", async (req, res) => {
+// search tasks that have due_date in certain week number
+router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
   try {
     // res.send(req.params.weekNumber);
     res.send(await database.findTasksByWeek(req.params.weekNumber));
+    res.statusCode = 200;
+  } catch (err) {
+    res.statusCode = 500;
+    res.send(err);
+  }
+});
+
+// get database entry with regex where id is a number
+router.get("/:idNumber([0-9]+)", async (req, res) => {
+  try {
+    res.send(await database.findById(Number(req.params.idNumber)));
     res.statusCode = 200;
   } catch (err) {
     res.statusCode = 500;

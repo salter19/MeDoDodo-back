@@ -109,7 +109,7 @@ const connectionFunctions = {
   findTasksByWeek: (weekNumber) => {
     function someFunc(resolve, reject) {
       if (connection) {
-        if (weekNumber > 0 && weekNumber < 54) {
+        if (Number(weekNumber) > 0 && Number(weekNumber) < 54) {
           const sql = "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ?";
           connection.query(sql, weekNumber, (err, tasks) => {
             if (err) {
