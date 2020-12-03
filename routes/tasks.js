@@ -1,5 +1,6 @@
 const express = require("express");
-const database = require("./promisecrud.js");
+const path = require("path");
+const database = require(path.join(__dirname, "./promisecrud.js"));
 
 // create router
 const router = express.Router();

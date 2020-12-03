@@ -1,5 +1,6 @@
-const database = require("./routes/promisecrud.js");
-const tasks = require("./routes/tasks.js");
+const path = require("path");
+const database = require(path.join(__dirname, "./routes/promisecrud.js"));
+const tasks = require(path.join(__dirname, "./routes/tasks.js"));
 const express = require("express");
 const app = express();
 const cors = require("cors");

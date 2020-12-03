@@ -1,4 +1,5 @@
-const Schemas = require("../database/schema");
+const path = require("path");
+const Schemas = require(path.join(__dirname, "../database/schema"));
 const Validator = require("jsonschema").Validator;
 const schemaValidation = new Validator();
 
