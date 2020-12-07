@@ -1,3 +1,4 @@
+const { WSASERVICE_NOT_FOUND } = require("constants");
 const mysql = require("mysql");
 const path = require("path");
 const config = require(path.join(__dirname, "./configuration.js"));
@@ -178,7 +179,7 @@ const connectionFunctions = {
       const getData = () => {
         const sql = "SELECT * FROM categories";
 
-        connection.query(sql, (err, res, fields) => {
+        connection.query(sql, (err, res) => {
           const cat = JSON.parse(JSON.stringify(res));
           err
             ? reject(`${400} - Invalid input could not retrieve categories`)
@@ -216,8 +217,13 @@ const connectionFunctions = {
         const getTasks = async(title) => {
           const catID = await getCatID(title)
           const sql = `SELECT * FROM tasks WHERE category_id = ${catID}`
-          console.log(sql)
-          //connection.query(sql, catID)
+          
+          connection.query(sql, (err, res) => {
+            const tasks = JSON.parse(JSON.stringify(res))
+            err 
+            ? reject(`${404} - Not Found, no such category.`)
+            : resolve(res)
+          })
         }
         const isCategory = await isCategoryTitle(title)
         isCategory

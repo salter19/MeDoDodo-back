@@ -45,8 +45,10 @@ router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
 router.get('/category/:catTitle([0-9a-zA-Z_%]+)', async (req, res) => {
   try {
     const result = await database.findByCat(req.params.catTitle)
-    res.send(`found: ${result} \n`)
+    res.statusCode = 200; 
+    res.send(result)
   } catch (error) {
+    res.statusCode = 500;
     res.send(`${error}`)
   }
 })
