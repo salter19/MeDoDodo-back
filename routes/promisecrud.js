@@ -206,6 +206,10 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
+  findByCat: (title) => {
+
+    return new Promise(someFunc)
+  }
   
 
   findById: (id) => {
