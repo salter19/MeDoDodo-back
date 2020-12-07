@@ -1,6 +1,6 @@
 module.exports = {
-  host: "mydb.tamk.fi",
-  user: process.env.user,
-  password: process.env.password,
-  database: process.env.database,
+  host: 'localhost', // "mydb.tamk.fi",
+  user: 'root', // process.env.user,
+  password: 'mattOomena9dB', // process.env.password,
+  database: 'dodo' // process.env.database,
 };

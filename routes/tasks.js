@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const sqlString = require('sqlstring')
 const database = require(path.join(__dirname, "./promisecrud.js"));
 
 // create router
@@ -39,12 +40,14 @@ router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
   }
 });
 
-router.get('/category/:catTitle([0-9a-zA-Z_]+)', async (req, res) => {
+// to include spaces in titles use % sign in express get statement 
+// and %20 in the curl where spaces should be
+router.get('/category/:catTitle([0-9a-zA-Z_%]+)', async (req, res) => {
   try {
-    res.send(`found: ${req.params.catTitle} \n`)
+    const result = await database.findByCat(req.params.catTitle)
+    res.send(`found: ${result} \n`)
   } catch (error) {
-    alert(`Not cat that I know ${err}`)
-    
+    res.send(`${error}`)
   }
 })
 

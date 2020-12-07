@@ -41,10 +41,13 @@ const getValues = (task) => {
 const isCategoryTitle = async (title) => {
   const allCategories = await connectionFunctions.getCategories();
   let isValid = false;
+  console.log(title + isValid)
 
   for (const data of allCategories) {
     if (data.title === title) {
       isValid = true;
+      console.log(title + isValid)
+
     }
   }
   return isValid;
@@ -208,8 +211,27 @@ const connectionFunctions = {
 
   findByCat: (title) => {
 
+    const someFunc = (resolve, reject) => {
+      const findTasks = async() => {
+        const getTasks = async(title) => {
+          const catID = await getCatID(title)
+          const sql = `SELECT * FROM tasks WHERE category_id = ${catID}`
+          console.log(sql)
+          //connection.query(sql, catID)
+        }
+        const isCategory = await isCategoryTitle(title)
+        isCategory
+        ? getTasks(title)
+        : reject(`${404} - Not found, no such category exists.`)
+
+
+      }
+
+      connection ? findTasks() : reject(`${500} - No connection, cannot search through categories.`)
+    }
+
     return new Promise(someFunc)
-  }
+  },
   
 
   findById: (id) => {
