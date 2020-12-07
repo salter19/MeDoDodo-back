@@ -39,6 +39,15 @@ router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
   }
 });
 
+router.get('/category/:catTitle([0-9a-zA-Z_]+)', async (req, res) => {
+  try {
+    res.send(`found: ${req.params.catTitle} \n`)
+  } catch (error) {
+    alert(`Not cat that I know ${err}`)
+    
+  }
+})
+
 // get database entry with regex where id is a number
 router.get("/:idNumber([0-9]+)", async (req, res) => {
   try {

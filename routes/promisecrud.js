@@ -206,8 +206,9 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
+  
+
   findById: (id) => {
-    console.log("hello it is me mario" + id);
     const someFunc = (resolve, reject) => {
       const findTask = async () => {
         const sql = `SELECT * FROM tasks WHERE id =?`;
