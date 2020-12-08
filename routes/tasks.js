@@ -53,16 +53,28 @@ router.get("/category/:catTitle([0-9a-zA-Z_%]+)", async (req, res) => {
   }
 });
 
-// get all categories
-router.get('/categorytitles', async (req, res) => {
+// finding category with id
+router.get("/category/id/:catId([0-9]+)", async (req, res) => {
   try {
-    const result = await database.getCategorytitles();
-    res.send(result)
+    const result = await database.findByCatId(Number(req.params.catId));
+    res.statusCode = 200;
+    res.send(result);
   } catch (error) {
     res.statusCode = 500;
-    res.send(`${error}`)
+    res.send(`${error}`);
   }
-})
+});
+
+// get all categories
+router.get("/categorytitles", async (req, res) => {
+  try {
+    const result = await database.getCategorytitles();
+    res.send(result);
+  } catch (error) {
+    res.statusCode = 500;
+    res.send(`${error}`);
+  }
+});
 
 // get database entry with regex where id is a number
 router.get("/:idNumber([0-9]+)", async (req, res) => {
@@ -79,6 +91,18 @@ router.get("/:idNumber([0-9]+)", async (req, res) => {
 router.delete("/:idNumber(-?[0-9]+)", async (req, res) => {
   try {
     await database.deleteById(Number(req.params.idNumber));
+    res.statusCode = 204;
+    res.end();
+  } catch (err) {
+    res.statusCode = 500;
+    res.end();
+  }
+});
+
+// delete category from database
+router.delete("/category/:idNumber(-?[0-9]+)", async (req, res) => {
+  try {
+    await database.deleteCategoryById(Number(req.params.idNumber));
     res.statusCode = 204;
     res.end();
   } catch (err) {

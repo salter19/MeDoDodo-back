@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const path = require("path");
-//const config = require(path.join(__dirname, "./configuration.js"));
-const config = require(path.join(__dirname, './config.js'))
+const config = require(path.join(__dirname, "./configuration.js"));
+// const config = require(path.join(__dirname, './config.js'))
 const Task = require(path.join(__dirname, "./task"));
 const Schemas = require(path.join(__dirname, "./../database/schema"));
 const Validator = require("jsonschema").Validator;
@@ -61,6 +61,11 @@ const getCatID = async (title) => {
     }
   }
   return catID;
+};
+const getCatLength = async (id) => {
+  const taskAmount = await connectionFunctions.findByCatId(id);
+  const catLength = taskAmount.length;
+  return catLength;
 };
 const saveNewCategory = async (title) => {
   try {
@@ -205,25 +210,26 @@ const connectionFunctions = {
     };
     return new Promise(someFunc);
   },
-  getCategorytitles: async() => {
+  getCategorytitles: async () => {
     const someFunc = (resolve, reject) => {
       const getData = () => {
-        const sql = 'SELECT title FROM categories';
+        const sql = "SELECT title FROM categories";
 
         connection.query(sql, (err, res) => {
+          const result = JSON.parse(JSON.stringify(res));
 
-          const result = JSON.parse(JSON.stringify(res))
-          
-          err 
-            ? reject(`${404} - Not found. Something went wrong and no category titles were found.`) 
-            : resolve(result)
-        })
-      }
-      connection 
+          err
+            ? reject(
+                `${404} - Not found. Something went wrong and no category titles were found.`
+              )
+            : resolve(result);
+        });
+      };
+      connection
         ? getData()
-        : reject(`${500} - No connection. Could not retrieve category titles.`)
-    }
-    return new Promise(someFunc)
+        : reject(`${500} - No connection. Could not retrieve category titles.`);
+    };
+    return new Promise(someFunc);
   },
   saveCategory: async (_title) => {
     const someFunc = async (resolve, reject) => {
@@ -260,6 +266,26 @@ const connectionFunctions = {
         isCategory
           ? getTasks(title)
           : reject(`${404} - Not found, no such category exists.`);
+      };
+
+      connection
+        ? findTasks()
+        : reject(`${500} - No connection, cannot search through categories.`);
+    };
+
+    return new Promise(someFunc);
+  },
+
+  findByCatId: (id) => {
+    const someFunc = (resolve, reject) => {
+      const findTasks = async () => {
+        const sql = `SELECT * FROM tasks WHERE category_id = ${id}`;
+        connection.query(sql, (err, res) => {
+          const tasks = JSON.parse(JSON.stringify(res));
+          err
+            ? reject(`${404} - Not Found, no such category.`)
+            : resolve(tasks);
+        });
       };
 
       connection
@@ -316,36 +342,46 @@ const connectionFunctions = {
     }
     return new Promise(someFunc);
   },
-  /*
-  findById: (id) => {
+
+  deleteCategoryById: (id) => {
     function someFunc(resolve, reject) {
-      if (connection) {
-        // if id is fine proceed to query
-        connection.query(
-          "SELECT * FROM locations WHERE id =?",
-          id,
-          (err, locations) => {
-            if (err) {
-              reject(err);
-            }
-            if (locations.length === 0) {
-              reject(
-                `Could not find id ${id}. Maybe it has been deleted or it doesn't exist.`
-              );
-            } else {
-              resolve(
-                "Id " + id + " found:\n" + JSON.stringify(locations)
-                // `Id ${id} was found!\nid: ${locations[0].id}, latitude: ${locations[0].latitude}, longitude: ${locations[0].longitude}`
-              );
-            }
+      const findTask = async () => {
+        try {
+          const tasksInCategory = await getCatLength(id);
+          // check that category is empty and
+          // default category can't be removed
+          if (tasksInCategory === 0 && id !== 1) {
+            const sql = `DELETE FROM categories WHERE id =?`;
+            connection.query(sql, id, (err, result) => {
+              if (err) {
+                reject(err);
+              }
+              // check if deletion affected any rows and something was actually removed
+              if (result.affectedRows === 0) {
+                reject(`Category with id ${id} not found. Couldn't delete it.`);
+              } else {
+                // some rows were changed so deletion was done
+                resolve("Success, deleted category with id " + id);
+              }
+            });
+          } else {
+            reject(
+              `Couldn't delete category.\nIt is not empty or it is the default category.`
+            );
           }
-        );
-      } else {
-        reject("No connection. Can't find id " + id);
-      }
+        } catch (e) {
+          reject(`${400} - Invalid input, could not find category.`);
+        }
+      };
+
+      connection
+        ? findTask()
+        : reject(`${500} - No connection, cannot delete category.`);
     }
     return new Promise(someFunc);
   },
+
+  /*
 
   filterLatitude: (min, max) => {
     function someFunc(resolve, reject) {
