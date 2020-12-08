@@ -193,6 +193,26 @@ const connectionFunctions = {
     };
     return new Promise(someFunc);
   },
+  getCategorytitles: async() => {
+    const someFunc = (resolve, reject) => {
+      const getData = () => {
+        const sql = 'SELECT title FROM categories';
+
+        connection.query(sql, (err, res) => {
+
+          const result = JSON.parse(JSON.stringify(res))
+          
+          err 
+            ? reject(`${404} - Not found. Something went wrong and no category titles were found.`) 
+            : resolve(result)
+        })
+      }
+      connection 
+        ? getData()
+        : reject(`${500} - No connection. Could not retrieve category titles.`)
+    }
+    return new Promise(someFunc)
+  },
   saveCategory: async (_title) => {
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {

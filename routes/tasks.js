@@ -54,15 +54,15 @@ router.get('/category/:catTitle([0-9a-zA-Z_%]+)', async (req, res) => {
 })
 
 // get all categories
-router.get('/categorytitles'), async (req, res) => {
+router.get('/categorytitles', async (req, res) => {
   try {
-    const result = await database.getCategories();
+    const result = await database.getCategorytitles();
     res.send(result)
   } catch (error) {
     res.statusCode = 500;
     res.send(`${error}`)
   }
-}
+})
 
 // get database entry with regex where id is a number
 router.get("/:idNumber([0-9]+)", async (req, res) => {
