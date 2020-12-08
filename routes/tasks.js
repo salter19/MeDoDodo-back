@@ -56,7 +56,7 @@ router.get('/category/:catTitle([0-9a-zA-Z_%]+)', async (req, res) => {
 // get all categories
 router.get('/categorytitles'), async (req, res) => {
   try {
-    const result = await database.findCatTitles();
+    const result = await database.getCategories();
     res.send(result)
   } catch (error) {
     res.statusCode = 500;
