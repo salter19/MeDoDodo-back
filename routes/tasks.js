@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const sqlString = require('sqlstring')
+const sqlString = require("sqlstring");
 const database = require(path.join(__dirname, "./promisecrud.js"));
 
 // create router
@@ -40,42 +40,24 @@ router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
   }
 });
 
-// to include spaces in titles use % sign in express get statement 
+// to include spaces in titles use % sign in express get statement
 // and %20 in the curl where spaces should be
-router.get('/category/:catTitle([0-9a-zA-Z_%]+)', async (req, res) => {
+router.get("/category/:catTitle([0-9a-zA-Z_%]+)", async (req, res) => {
   try {
-    const result = await database.findByCat(req.params.catTitle)
-    res.statusCode = 200; 
-    res.send(result)
+    const result = await database.findByCat(req.params.catTitle);
+    res.statusCode = 200;
+    res.send(result);
   } catch (error) {
     res.statusCode = 500;
-    res.send(`${error}`)
+    res.send(`${error}`);
   }
-})
+});
 
 // get database entry with regex where id is a number
 router.get("/:idNumber([0-9]+)", async (req, res) => {
   try {
     res.send(await database.findById(Number(req.params.idNumber)));
     res.statusCode = 200;
-  } catch (err) {
-    res.statusCode = 500;
-    res.send(err);
-  }
-});
-
-/*
-
-// post new entry to database
-router.post("/", async (req, res) => {
-  try {
-    res.send(
-      await database.save([
-        Number(req.body.latitude),
-        Number(req.body.longitude),
-      ])
-    );
-    res.statusCode = 201;
   } catch (err) {
     res.statusCode = 500;
     res.send(err);
@@ -93,6 +75,10 @@ router.delete("/:idNumber(-?[0-9]+)", async (req, res) => {
     res.end();
   }
 });
+
+/*
+
+
 
 // filter results according to latitude values
 router.get(
