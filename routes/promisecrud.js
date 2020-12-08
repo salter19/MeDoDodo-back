@@ -42,13 +42,12 @@ const getValues = (task) => {
 const isCategoryTitle = async (title) => {
   const allCategories = await connectionFunctions.getCategories();
   let isValid = false;
-  console.log(title + isValid)
+  console.log(title + isValid);
 
   for (const data of allCategories) {
     if (data.title === title) {
       isValid = true;
-      console.log(title + isValid)
-
+      console.log(title + isValid);
     }
   }
   return isValid;
@@ -98,12 +97,14 @@ const connectionFunctions = {
   findAll: () => {
     function someFunc(resolve, reject) {
       if (connection) {
-        connection.query("select * from tasks", (err, tasks) => {
+        connection.query("select * from tasks", (err, result) => {
           if (err) {
             reject(err);
           }
-          const entries = JSON.parse(JSON.stringify(tasks));
-          resolve(entries);
+          if (result.length > 0) {
+            const entries = JSON.parse(JSON.stringify(result));
+            resolve(entries);
+          }
         });
       } else {
         reject("Please connect first to get the entries.");
@@ -115,7 +116,8 @@ const connectionFunctions = {
     function someFunc(resolve, reject) {
       if (connection) {
         if (Number(weekNumber) > 0 && Number(weekNumber) < 54) {
-          const sql = "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ?";
+          const sql =
+            "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ? ORDER BY due_date ASC";
           connection.query(sql, weekNumber, (err, tasks) => {
             if (err) {
               reject(err);
@@ -180,10 +182,20 @@ const connectionFunctions = {
         const sql = "SELECT * FROM categories";
 
         connection.query(sql, (err, res) => {
+          if (err) {
+            reject(`${400} - Invalid input could not retrieve categories`);
+          } else {
+            if (res.length > 0) {
+              const cat = JSON.parse(JSON.stringify(res));
+              resolve(cat);
+            }
+          }
+          /* this created an error somehow, corrections above -Hanna
           const cat = JSON.parse(JSON.stringify(res));
           err
             ? reject(`${400} - Invalid input could not retrieve categories`)
             : resolve(cat);
+            */
         });
       };
 
@@ -211,34 +223,32 @@ const connectionFunctions = {
   },
 
   findByCat: (title) => {
-
     const someFunc = (resolve, reject) => {
-      const findTasks = async() => {
-        const getTasks = async(title) => {
-          const catID = await getCatID(title)
-          const sql = `SELECT * FROM tasks WHERE category_id = ${catID}`
-          
+      const findTasks = async () => {
+        const getTasks = async (title) => {
+          const catID = await getCatID(title);
+          const sql = `SELECT * FROM tasks WHERE category_id = ${catID}`;
+
           connection.query(sql, (err, res) => {
-            const tasks = JSON.parse(JSON.stringify(res))
-            err 
-            ? reject(`${404} - Not Found, no such category.`)
-            : resolve(res)
-          })
-        }
-        const isCategory = await isCategoryTitle(title)
+            const tasks = JSON.parse(JSON.stringify(res));
+            err
+              ? reject(`${404} - Not Found, no such category.`)
+              : resolve(tasks);
+          });
+        };
+        const isCategory = await isCategoryTitle(title);
         isCategory
-        ? getTasks(title)
-        : reject(`${404} - Not found, no such category exists.`)
+          ? getTasks(title)
+          : reject(`${404} - Not found, no such category exists.`);
+      };
 
+      connection
+        ? findTasks()
+        : reject(`${500} - No connection, cannot search through categories.`);
+    };
 
-      }
-
-      connection ? findTasks() : reject(`${500} - No connection, cannot search through categories.`)
-    }
-
-    return new Promise(someFunc)
+    return new Promise(someFunc);
   },
-  
 
   findById: (id) => {
     const someFunc = (resolve, reject) => {
@@ -262,33 +272,31 @@ const connectionFunctions = {
     };
     return new Promise(someFunc);
   },
-  /*
+
   deleteById: (id) => {
     function someFunc(resolve, reject) {
       if (connection) {
         // if id is fine proceed to query
-        connection.query(
-          "DELETE FROM locations WHERE id =?",
-          id,
-          (err, result) => {
-            if (err) {
-              reject(err);
-            }
-            // check if deletion affected any rows and something was actually removed
-            if (result.affectedRows === 0) {
-              reject(`Id ${id} not found. Couldn't delete it.`);
-            } else {
-              // some rows were changed so deletion was done
-              resolve("Success, deleted id " + id);
-            }
+        const sql = `DELETE FROM tasks WHERE id =?`;
+        connection.query(sql, id, (err, result) => {
+          if (err) {
+            reject(err);
           }
-        );
+          // check if deletion affected any rows and something was actually removed
+          if (result.affectedRows === 0) {
+            reject(`Id ${id} not found. Couldn't delete it.`);
+          } else {
+            // some rows were changed so deletion was done
+            resolve("Success, deleted id " + id);
+          }
+        });
       } else {
         reject("Can't delete id " + id + ". There is no connection.");
       }
     }
     return new Promise(someFunc);
   },
+  /*
   findById: (id) => {
     function someFunc(resolve, reject) {
       if (connection) {
