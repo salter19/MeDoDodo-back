@@ -1,6 +1,5 @@
 const express = require("express");
 const path = require("path");
-const sqlString = require("sqlstring");
 const database = require(path.join(__dirname, "./promisecrud.js"));
 
 // create router

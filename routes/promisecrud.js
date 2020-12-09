@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const path = require("path");
-const config = require(path.join(__dirname, "./configuration.js"));
-// const config = require(path.join(__dirname, './config.js'))
+//const config = require(path.join(__dirname, "./configuration.js"));
+const config = require(path.join(__dirname, "./config.js"));
 const Task = require(path.join(__dirname, "./task"));
 const Schemas = require(path.join(__dirname, "./../database/schema"));
 const Validator = require("jsonschema").Validator;
