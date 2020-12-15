@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const path = require("path");
-//const config = require(path.join(__dirname, "./configuration.js"));
+// const config = require(path.join(__dirname, "./configuration.js"));
 const config = require(path.join(__dirname, "./config.js"));
 const Task = require(path.join(__dirname, "./task"));
 const Schemas = require(path.join(__dirname, "./../database/schema"));
@@ -117,13 +117,13 @@ const connectionFunctions = {
     }
     return new Promise(someFunc);
   },
-  findTasksByWeek: (weekNumber) => {
+  findTasksByWeek: (weekNumber, year) => {
     function someFunc(resolve, reject) {
       if (connection) {
         if (Number(weekNumber) > 0 && Number(weekNumber) < 54) {
           const sql =
-            "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ? ORDER BY due_date ASC";
-          connection.query(sql, weekNumber, (err, tasks) => {
+            "SELECT * FROM tasks WHERE WEEK(due_date, 3) = ? AND YEAR(due_date) = ? ORDER BY due_date ASC";
+          connection.query(sql, [weekNumber, year], (err, tasks) => {
             if (err) {
               reject(err);
             }
