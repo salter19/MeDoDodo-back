@@ -27,17 +27,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-// search tasks that have due_date in certain week number
-router.get("/week/:weekNumber(-?[0-9]+)", async (req, res) => {
-  try {
-    // res.send(req.params.weekNumber);
-    res.send(await database.findTasksByWeek(req.params.weekNumber));
-    res.statusCode = 200;
-  } catch (err) {
-    res.statusCode = 500;
-    res.send(err);
+// search tasks that have due_date in certain week number and year
+router.get(
+  "/week/:weekNumber([0-9]{1,2})/:yearIs(2[0-9]{3})",
+  async (req, res) => {
+    try {
+      res.send(
+        await database.findTasksByWeek(req.params.weekNumber, req.params.yearIs)
+      );
+      res.statusCode = 200;
+    } catch (err) {
+      res.statusCode = 500;
+      res.send(err);
+    }
   }
-});
+);
 
 // to include spaces in titles use % sign in express get statement
 // and %20 in the curl where spaces should be
