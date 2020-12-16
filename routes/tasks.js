@@ -68,12 +68,22 @@ router.get("/category/id/:catId([0-9]+)", async (req, res) => {
   }
 });
 
-// get all categories
+// get all categorie titles
 router.get("/categorytitles", async (req, res) => {
   try {
     const result = await database.getCategorytitles();
     res.send(result);
   } catch (error) {
+    res.statusCode = 500;
+    res.send(`${error}`);
+  }
+});
+
+router.get('/categories', async (req, res) => {
+  try {
+    const result = await database.getCategories();
+    res.send(result);
+  } catch (error) {    
     res.statusCode = 500;
     res.send(`${error}`);
   }

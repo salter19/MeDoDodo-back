@@ -195,12 +195,6 @@ const connectionFunctions = {
               resolve(cat);
             }
           }
-          /* this created an error somehow, corrections above -Hanna
-          const cat = JSON.parse(JSON.stringify(res));
-          err
-            ? reject(`${400} - Invalid input could not retrieve categories`)
-            : resolve(cat);
-            */
         });
       };
 
