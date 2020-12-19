@@ -161,9 +161,6 @@ const connectionFunctions = {
               // set catID into Task object as well
               task.setCategoryID(Number(catID));
 
-              console.log('Task with id:')
-              console.log(task)
-
               // variables needed in the query
               const keys = getKeys(task.getTaskItems());
               const questionMarks = getQuestionMarks(task);
