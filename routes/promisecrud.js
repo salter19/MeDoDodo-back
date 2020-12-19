@@ -152,6 +152,18 @@ const connectionFunctions = {
                 ? (catID = await getCatID(task.category_title))
                 : (catID = await saveNewCategory(task.category_title));
 
+              if (isCategory) {
+                catID = await getCatID(task.category_title);
+              } else {
+                const tmp = await saveNewCategory(task.category_title);
+
+                if (tmp) {
+                  catID = tmp;
+                } else {
+                  catID = await getCatID(task.category_title);
+                }
+              }
+              
               // set catID into Task object as well
               task.setCategoryID(Number(catID));
 
@@ -224,7 +236,7 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
   saveCategory: async (_title) => {
-  
+    
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
