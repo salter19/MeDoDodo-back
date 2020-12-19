@@ -42,12 +42,10 @@ const getValues = (task) => {
 const isCategoryTitle = async (title) => {
   const allCategories = await connectionFunctions.getCategories();
   let isValid = false;
-  console.log(title + isValid);
 
   for (const data of allCategories) {
     if (data.title === title) {
       isValid = true;
-      console.log(title + isValid);
     }
   }
   return isValid;
