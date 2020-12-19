@@ -30,6 +30,8 @@ router.post("/", async (req, res) => {
 // save new category
 router.post("/category/", async (req, res) => {
   try {
+    console.log('at router')
+    console.log(req.body)
     const result = await database.saveCategory(req.body);
     res.send(result);
   } catch (e) {

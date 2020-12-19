@@ -44,6 +44,7 @@ const isCategoryTitle = async (title) => {
   let isValid = false;
 
   for (const data of allCategories) {
+    console.log(data)
     if (data.title === title) {
       isValid = true;
     }
@@ -58,6 +59,7 @@ const getCatID = async (title) => {
       catID = data.id;
     }
   }
+  console.log('cat id: ' + catID)
   return catID;
 };
 const getCatLength = async (id) => {
@@ -146,6 +148,10 @@ const connectionFunctions = {
               const task = new Task(input);
               const isCategory = await isCategoryTitle(task.category_title);
               let catID;
+              
+              console.log('Task:')
+              console.log(task)
+              console.log('isCategory' + isCategory)
 
               // set catID based on whether it exists or new is created
               isCategory
@@ -154,6 +160,9 @@ const connectionFunctions = {
 
               // set catID into Task object as well
               task.setCategoryID(Number(catID));
+
+              console.log('Task with id:')
+              console.log(task)
 
               // variables needed in the query
               const keys = getKeys(task.getTaskItems());
@@ -224,6 +233,8 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
   saveCategory: async (_title) => {
+  
+    console.log('type of title ' + typeof _title)
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
