@@ -44,7 +44,6 @@ const isCategoryTitle = async (title) => {
   let isValid = false;
 
   for (const data of allCategories) {
-    console.log(data)
     if (data.title === title) {
       isValid = true;
     }
