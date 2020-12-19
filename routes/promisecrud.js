@@ -227,7 +227,6 @@ const connectionFunctions = {
   },
   saveCategory: async (_title) => {
   
-    console.log('type of title ' + typeof _title)
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
