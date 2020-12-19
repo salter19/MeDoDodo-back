@@ -27,6 +27,19 @@ router.post("/", async (req, res) => {
   }
 });
 
+// save new category
+router.post("/category/", async (req, res) => {
+  try {
+    console.log(req.body);
+    const result = await database.saveCategory(req.body);
+    console.log(result);
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.end();
+  }
+});
+
 // search tasks that have due_date in certain week number and year
 router.get(
   "/week/:weekNumber([0-9]{1,2})/:yearIs(2[0-9]{3})",
@@ -79,11 +92,11 @@ router.get("/categorytitles", async (req, res) => {
   }
 });
 
-router.get('/categories', async (req, res) => {
+router.get("/categories", async (req, res) => {
   try {
     const result = await database.getCategories();
     res.send(result);
-  } catch (error) {    
+  } catch (error) {
     res.statusCode = 500;
     res.send(`${error}`);
   }

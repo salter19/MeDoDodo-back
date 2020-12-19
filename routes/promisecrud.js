@@ -142,7 +142,6 @@ const connectionFunctions = {
 
   saveTask: (input) => {
     const someFunc = async (resolve, reject) => {
-      
       const createNewTask = () => {
         validateTaskInput(input)
           ? (async () => {
@@ -230,7 +229,7 @@ const connectionFunctions = {
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
-        connection.query(sql, _title, (err, res) => {
+        connection.query(sql, _title.title, (err, res) => {
           err
             ? reject(`${400} - Invalid input, could not create new category.`)
             : resolve(`${res.insertId}`);
