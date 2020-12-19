@@ -148,10 +148,6 @@ const connectionFunctions = {
               const task = new Task(input);
               const isCategory = await isCategoryTitle(task.category_title);
               let catID;
-              
-              console.log('Task:')
-              console.log(task)
-              console.log('isCategory' + isCategory)
 
               // set catID based on whether it exists or new is created
               isCategory
