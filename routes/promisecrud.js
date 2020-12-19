@@ -142,6 +142,7 @@ const connectionFunctions = {
 
   saveTask: (input) => {
     const someFunc = async (resolve, reject) => {
+      
       const createNewTask = () => {
         validateTaskInput(input)
           ? (async () => {
