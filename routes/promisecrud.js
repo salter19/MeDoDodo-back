@@ -59,7 +59,6 @@ const getCatID = async (title) => {
       catID = data.id;
     }
   }
-  console.log('cat id: ' + catID)
   return catID;
 };
 const getCatLength = async (id) => {
