@@ -1,12 +1,10 @@
 const Task = class {
   constructor(taskObj) {
-    console.log(taskObj)
     this.title = taskObj.title;
     this.due_date = taskObj.due_date;
     this.description = taskObj.description ? taskObj.description : "";
     this.priority = taskObj.priority ? taskObj.priority : 0;
 
-    console.log(this.category_title + ' | ' + taskObj.category_title)
     this.category_title = taskObj.category_title
       ? taskObj.category_title
       : "my_tasks";
