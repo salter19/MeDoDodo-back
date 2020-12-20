@@ -197,7 +197,6 @@ const connectionFunctions = {
       
       const update = () => {
         const sql = `UPDATE tasks SET ${key} = ? WHERE id = ${id}`;
-        console.log(sql + " " + value)
         connection.query(sql, value, (err, res) => {
           err
             ? reject(`${400} - Invalid input in query, task not updated.`)
