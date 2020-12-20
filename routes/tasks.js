@@ -40,6 +40,11 @@ router.post("/category/", async (req, res) => {
   }
 });
 
+// modify task
+router.route("/modify/:idNumber([0-9]+)")
+  .get((req, res) => res.send(`get task : ${req.body}`))
+  .put((req, res) => console.log(`calling update for ${req.body}`))
+
 // search tasks that have due_date in certain week number and year
 router.get(
   "/week/:weekNumber([0-9]{1,2})/:yearIs(2[0-9]{3})",
@@ -81,7 +86,7 @@ router.get("/category/id/:catId([0-9]+)", async (req, res) => {
   }
 });
 
-// get all categorie titles
+// get all category titles
 router.get("/categorytitles", async (req, res) => {
   try {
     const result = await database.getCategorytitles();
