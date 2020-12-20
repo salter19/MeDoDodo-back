@@ -46,8 +46,10 @@ router.put(
     console.log(req.body)
     try {
       const task = await database.findById(req.params.idNumber)
+      const result = await database.updateTask(req.params.idNumber, req.body.key, req.body.value);
 
       console.log(task[0] );
+      console.log(result)
       res.send(`get task : ${task[0].title}`);
     } catch (error) {
       console.log('something went wrong w/ route - get\n' + error)

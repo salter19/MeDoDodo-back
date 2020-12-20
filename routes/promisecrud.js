@@ -195,6 +195,17 @@ const connectionFunctions = {
   updateTask: async(id, key, value) => {
     const someFunc = (resolve, reject) => {
       
+      const update = () => {
+        const sql = `UPDATE tasks SET ${key} = ? WHERE id = ${id}`;
+        console.log(sql)
+        connection.query(sql, value, (err, res) => {
+          console.log(res)
+          console.log(value)
+          err
+            ? reject(`${400} - Invalid input in query, task not updated.`)
+            : resolve(`${200} - Updated. ID: ${res.message}`)
+        })
+      }
 
       // check that connection is up
       connection
@@ -203,7 +214,7 @@ const connectionFunctions = {
     }
 
     return new Promise(someFunc);
-  }
+  },
 
   getCategories: async () => {
     const someFunc = (resolve, reject) => {
