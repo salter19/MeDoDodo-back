@@ -42,13 +42,9 @@ router.post("/category/", async (req, res) => {
 router.put(
   "/modify/:idNumber([0-9]+)", 
   async (req, res) => {
-    console.log(`got here w/ ${req.params.idNumber}` )
-    console.log(req.body)
     try {
-      //const task = await database.findById(req.params.idNumber)
       const result = await database.updateTask(req.params.idNumber, req.body.key, req.body.value);
 
-      console.log(result)
       res.send(`get task : ${result}`);
     } catch (error) {
       console.log('something went wrong w/ route - get\n' + error)
@@ -108,6 +104,7 @@ router.get("/categorytitles", async (req, res) => {
   }
 });
 
+// get all categories
 router.get("/categories", async (req, res) => {
   try {
     const result = await database.getCategories();
