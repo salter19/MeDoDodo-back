@@ -191,6 +191,12 @@ const connectionFunctions = {
 
     return new Promise(someFunc);
   },
+
+  updateTask: async(id, key, value) => {
+
+    return new Promise(someFunc);
+  }
+
   getCategories: async () => {
     const someFunc = (resolve, reject) => {
       const getData = () => {
@@ -252,7 +258,6 @@ const connectionFunctions = {
     };
     return new Promise(someFunc);
   },
-
   findByCat: (title) => {
     const someFunc = (resolve, reject) => {
       const findTasks = async () => {
@@ -280,7 +285,6 @@ const connectionFunctions = {
 
     return new Promise(someFunc);
   },
-
   findByCatId: (id) => {
     const someFunc = (resolve, reject) => {
       const findTasks = async () => {
@@ -347,7 +351,6 @@ const connectionFunctions = {
     }
     return new Promise(someFunc);
   },
-
   deleteCategoryById: (id) => {
     function someFunc(resolve, reject) {
       const findTask = async () => {

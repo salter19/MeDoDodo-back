@@ -30,8 +30,6 @@ router.post("/", async (req, res) => {
 // save new category
 router.post("/category/", async (req, res) => {
   try {
-    console.log('at router')
-    console.log(req.body)
     const result = await database.saveCategory(req.body);
     res.send(result);
   } catch (e) {
@@ -41,9 +39,21 @@ router.post("/category/", async (req, res) => {
 });
 
 // modify task
-router.route("/modify/:idNumber([0-9]+)")
-  .get((req, res) => res.send(`get task : ${req.body}`))
-  .put((req, res) => console.log(`calling update for ${req.body}`))
+router.put(
+  "/modify/:idNumber([0-9]+)", 
+  async (req, res) => {
+    console.log(`got here w/ ${req.params.idNumber}` )
+    console.log(req.body)
+    try {
+      const task = await database.findById(req.params.idNumber)
+
+      console.log(task[0] );
+      res.send(`get task : ${task[0].title}`);
+    } catch (error) {
+      console.log('something went wrong w/ route - get\n' + error)
+    } 
+  }
+);
 
 // search tasks that have due_date in certain week number and year
 router.get(
