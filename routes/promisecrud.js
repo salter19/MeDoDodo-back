@@ -193,6 +193,14 @@ const connectionFunctions = {
   },
 
   updateTask: async(id, key, value) => {
+    const someFunc = (resolve, reject) => {
+      
+
+      // check that connection is up
+      connection
+      ? update()
+      : reject(`${500} - No connection, cannot save task.`);
+    }
 
     return new Promise(someFunc);
   }
