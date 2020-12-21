@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const path = require("path");
 const config = require(path.join(__dirname, "./configuration.js"));
-//const config = require(path.join(__dirname, "./config.js"));
+// const config = require(path.join(__dirname, "./config.js"));
 const Task = require(path.join(__dirname, "./task"));
 const Schemas = require(path.join(__dirname, "./../database/schema"));
 const Validator = require("jsonschema").Validator;
@@ -163,7 +163,7 @@ const connectionFunctions = {
                   catID = await getCatID(task.category_title);
                 }
               }
-              
+
               // set catID into Task object as well
               task.setCategoryID(Number(catID));
 
@@ -192,23 +192,22 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
 
-  updateTask: async(id, key, value) => {
+  updateTask: async (id, key, value) => {
     const someFunc = (resolve, reject) => {
-      
       const update = () => {
         const sql = `UPDATE tasks SET ${key} = ? WHERE id = ${id}`;
         connection.query(sql, value, (err, res) => {
           err
             ? reject(`${400} - Invalid input in query, task not updated.`)
-            : resolve(`${200} - Updated. ID: ${res.message}`)
-        })
-      }
+            : resolve(`${200} - Updated. ID: ${res.message}`);
+        });
+      };
 
       // check that connection is up
       connection
-      ? update()
-      : reject(`${500} - No connection, cannot save task.`);
-    }
+        ? update()
+        : reject(`${500} - No connection, cannot save task.`);
+    };
 
     return new Promise(someFunc);
   },
@@ -258,7 +257,6 @@ const connectionFunctions = {
     return new Promise(someFunc);
   },
   saveCategory: async (_title) => {
-    
     const someFunc = async (resolve, reject) => {
       const createNewCategory = () => {
         const sql = `INSERT INTO categories(title) VALUES(?)`;
@@ -279,7 +277,7 @@ const connectionFunctions = {
       const findTasks = async () => {
         const getTasks = async (title) => {
           const catID = await getCatID(title);
-          const sql = `SELECT * FROM tasks WHERE category_id = ${catID}`;
+          const sql = `SELECT * FROM tasks WHERE category_id = ${catID} ORDER BY due_date ASC`;
 
           connection.query(sql, (err, res) => {
             const tasks = JSON.parse(JSON.stringify(res));
@@ -304,7 +302,7 @@ const connectionFunctions = {
   findByCatId: (id) => {
     const someFunc = (resolve, reject) => {
       const findTasks = async () => {
-        const sql = `SELECT * FROM tasks WHERE category_id = ${id}`;
+        const sql = `SELECT * FROM tasks WHERE category_id = ${id} ORDER BY due_date ASC`;
         connection.query(sql, (err, res) => {
           const tasks = JSON.parse(JSON.stringify(res));
           err
